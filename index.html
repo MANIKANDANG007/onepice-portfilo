@@ -530,7 +530,6 @@ section{padding:6rem 3rem;position:relative;z-index:1;}
 .form-submit:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(192,57,43,0.45);}
 .form-honeypot{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;}
 .contact-form-status{font-family:var(--mono);font-size:12px;margin-top:0.75rem;min-height:1.25em;}
-.contact-form-note{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:0.5rem;line-height:1.5;}
 
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(40px);transition:opacity 0.8s ease,transform 0.8s ease;}
@@ -548,14 +547,28 @@ section{padding:6rem 3rem;position:relative;z-index:1;}
 
 /* FOOTER */
 footer{
-  padding:2rem 3rem;
+  padding:2rem 3rem 2.25rem;
   border-top:1px solid rgba(212,160,23,0.2);
-  display:flex;justify-content:space-between;align-items:center;
+  display:flex;flex-direction:column;gap:1.5rem;
   position:relative;z-index:1;
   background:linear-gradient(180deg,transparent,rgba(6,10,18,0.8));
 }
-.footer-quote{font-family:var(--body);font-style:italic;font-size:14px;color:var(--muted);}
-.footer-right{font-family:var(--mono);font-size:11px;color:var(--muted);}
+.footer-daily{
+  text-align:center;max-width:720px;margin:0 auto;padding:1.25rem 1rem;
+  border:1px solid rgba(212,160,23,0.22);
+  background:linear-gradient(145deg,rgba(10,14,26,0.75),rgba(6,10,18,0.9));
+}
+.footer-daily-tag{
+  display:block;font-family:var(--serif);font-size:9px;letter-spacing:0.35em;color:var(--gold);margin-bottom:0.6rem;
+}
+.footer-daily-quote{
+  font-family:var(--body);font-size:clamp(15px,2vw,17px);font-style:italic;color:var(--parchment);line-height:1.75;margin:0;
+}
+.footer-row{
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+}
+.footer-quote{font-family:var(--body);font-style:italic;font-size:14px;color:var(--muted);max-width:520px;}
+.footer-right{font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:auto;}
 
 /* FLOATING SHIP */
 .ship-float{
@@ -598,7 +611,9 @@ footer{
   .contact-section{grid-template-columns:1fr;gap:2rem;}
   .about-section{padding:4rem 1.5rem 3rem;}
   .about-card{padding:1.75rem 1.25rem;}
-  footer{flex-direction:column;gap:0.5rem;text-align:center;}
+  footer{text-align:center;}
+  .footer-row{flex-direction:column;text-align:center;}
+  .footer-right{margin-left:0;}
   .wanted-stamp{display:none;}
 }
 @media(max-width:600px){
@@ -1032,7 +1047,6 @@ footer{
         <button type="submit" class="form-submit" id="contact-submit-btn">Send message</button>
       </form>
       <p class="contact-form-status" id="contact-form-status" role="status" aria-live="polite"></p>
-      <p class="contact-form-note">Sends via <a href="https://web3forms.com" target="_blank" rel="noopener noreferrer" style="color:var(--gold2);">Web3Forms</a> to <strong>dmanirk07@gmail.com</strong>. In the Web3Forms dashboard, allow domain <code style="font-size:10px;color:var(--gold);">manikandang007.github.io</code>.</p>
     </div>
     </div>
   </div>
@@ -1041,8 +1055,14 @@ footer{
 </main>
 
 <footer>
-  <div class="footer-quote">"I'm going to be the King of the Pirates" — and the greatest DevOps Engineer.</div>
-  <div class="footer-right">© 2026 Manikandan G · Grand Line DevOps</div>
+  <div class="footer-daily" aria-label="Motivational quote">
+    <span class="footer-daily-tag">✦ CAPTAIN'S LOGBOOK ✦</span>
+    <p class="footer-daily-quote" id="daily-quote"></p>
+  </div>
+  <div class="footer-row">
+    <div class="footer-quote">"I'm going to be the King of the Pirates" — and the greatest DevOps Engineer.</div>
+    <div class="footer-right">© 2026 Manikandan G · Grand Line DevOps</div>
+  </div>
 </footer>
 
 <script>
@@ -1102,7 +1122,7 @@ footer{
         if(data.success){
           contactForm.reset();
           if(formStatus){
-            formStatus.textContent='Sent. Check dmanirk07@gmail.com (inbox and spam).';
+            formStatus.textContent='Thank you — your message was sent. I\'ll get back to you soon.';
             formStatus.style.color='var(--gold2)';
           }
         }else{
@@ -1280,6 +1300,68 @@ footer{
     },{threshold:0.5});
     co.observe(el);
   });
+
+  /* CAPTAIN'S LOGBOOK — exactly 500 unique combos (20×25); random on each refresh */
+  const LOGBOOK_LEFT=[
+    'Chart the voyage the way Nami would',
+    'Straw Hat courage belongs in',
+    'Whitebeard-level uptime means',
+    'Zoro never drops his swords — never drop',
+    'Chopper heals bodies; on-call heals',
+    'Gear Second your rollouts when',
+    'Sanji serves reliability as hot as battle soup — bake in',
+    'Brook yoho\'d through death — back up',
+    'Franky would SUPER-charge',
+    'Robin reads forbidden text — you read',
+    'Usopp aims true under pressure — aim',
+    'Arlong Park fell when people learned',
+    'Dressrosa needed trust — prod needs',
+    'Wano\'s walls fell with patience and',
+    'Enies Lobby broke with',
+    'Marineford-scale firefighting demands',
+    'Escaping Impel Down needs',
+    'Skypiea said the cloud is really',
+    'A Log Pose jitters — steady the ship with',
+    'Observation Haki reads intent — AIOps reads'
+  ];
+  const LOGBOOK_RIGHT=[
+    'CI/CD that refuses cowardly Friday deploys',
+    'Terraform plans carved like sea-stone Poneglyphs',
+    'Kubernetes fleets that honor readiness probes',
+    'IaC reviews sharper than Mihawk\'s eye',
+    'Prometheus alerts humans can defend in court',
+    'Grafana dashboards the whole crew actually trusts',
+    'SageMaker pipelines that graduate to prod with honor',
+    'MLOps catching model drift before it crowns itself king',
+    'AIOps stitching logs into timelines worth fighting for',
+    'multi-cloud routing without drowning in egress Berries',
+    'GitOps where git is the admiral of truth',
+    'LLM eval gates crueler than Baroque Works tests',
+    'vector DBs mapping embedding treasure like Road Poneglyphs',
+    'feature flags safer than gambling on awakened fruits',
+    'cost FinOps haggling harder than Nami in a market',
+    'zero-trust perimeters sterner than Marine HQ gates',
+    'blue-green armadas island-hopping with zero downtime',
+    'runbooks clearer than the text on a Vivre Card',
+    'secrets in Vault — never inked on tavern napkins',
+    'autoscaling that answers rushes like Gear Fourth',
+    'distributed traces narrating every cannon in microservice wars',
+    'Kafka currents charted sober through the Calm Belt',
+    'SLOs posted like bounties everyone respects',
+    'canary scouts landing beaches before the full fleet',
+    'OIDC and OAuth flows tighter than Impel Down shackles'
+  ];
+  const LOGBOOK_QUOTES=[];
+  for(let i=0;i<LOGBOOK_LEFT.length;i++){
+    for(let j=0;j<LOGBOOK_RIGHT.length;j++){
+      LOGBOOK_QUOTES.push(LOGBOOK_LEFT[i]+' — '+LOGBOOK_RIGHT[j]);
+    }
+  }
+  const dqEl=document.getElementById('daily-quote');
+  if(dqEl&&LOGBOOK_QUOTES.length){
+    const pick=LOGBOOK_QUOTES[Math.floor(Math.random()*LOGBOOK_QUOTES.length)];
+    dqEl.textContent='"'+pick+'"';
+  }
 })();
 </script>
 </body>
