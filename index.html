@@ -529,6 +529,7 @@ section{padding:6rem 3rem;position:relative;z-index:1;}
 }
 .form-submit:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(192,57,43,0.45);}
 .form-honeypot{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;}
+.contact-form-status{font-family:var(--mono);font-size:12px;margin-top:0.75rem;min-height:1.25em;}
 .contact-form-note{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:0.5rem;line-height:1.5;}
 
 /* REVEAL */
@@ -1014,12 +1015,9 @@ footer{
     </div>
     <div class="contact-form-wrap">
       <div class="form-block-title">Send a message</div>
-      <form class="contact-form" action="https://formsubmit.co/dmanirk07@gmail.com" method="POST">
-        <input type="hidden" name="_subject" value="Portfolio — Grand Line DevOps">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_template" value="box">
-        <input type="hidden" name="_next" id="formsubmit-next" value="https://manikandang007.github.io/onepice-portfilo/#den-den">
-        <input type="text" name="_honey" class="form-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <!-- For reliable email: get a free access key at https://web3forms.com and paste it in the script (WEB3FORMS_ACCESS_KEY). -->
+      <form class="contact-form" id="portfolio-contact-form" action="#" method="post">
+        <input type="text" name="botcheck" class="form-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="form-field">
           <label class="form-label" for="contact-name">Your name</label>
           <input class="form-input" id="contact-name" type="text" name="name" required autocomplete="name" placeholder="Name">
@@ -1032,9 +1030,10 @@ footer{
           <label class="form-label" for="contact-msg">Message</label>
           <textarea class="form-textarea" id="contact-msg" name="message" required placeholder="Your message…"></textarea>
         </div>
-        <button type="submit" class="form-submit">Send message</button>
+        <button type="submit" class="form-submit" id="contact-submit-btn">Send message</button>
       </form>
-      <p class="contact-form-note">Powered by <a href="https://formsubmit.co" target="_blank" rel="noopener noreferrer" style="color:var(--gold2);">FormSubmit</a>. On the <strong>first</strong> submission, check <strong>dmanirk07@gmail.com</strong> and click the activation link so future messages are delivered.</p>
+      <p class="contact-form-status" id="contact-form-status" role="status" aria-live="polite"></p>
+      <p class="contact-form-note"><strong>Email delivery:</strong> Add your free <a href="https://web3forms.com" target="_blank" rel="noopener noreferrer" style="color:var(--gold2);">Web3Forms</a> key in <code style="font-size:10px;color:var(--gold);">index.html</code> (<code style="font-size:10px;color:var(--gold);">WEB3FORMS_ACCESS_KEY</code>). Until then, submit opens your mail app to <strong>dmanirk07@gmail.com</strong>. Also check Gmail <strong>Spam</strong> for older FormSubmit mail.</p>
     </div>
     </div>
   </div>
@@ -1049,6 +1048,9 @@ footer{
 
 <script>
 (function(){
+  /* https://web3forms.com — paste key after signing up (messages go to the email you use there, e.g. dmanirk07@gmail.com). Leave empty to use mailto fallback. */
+  const WEB3FORMS_ACCESS_KEY='';
+
   const mqReduce=window.matchMedia('(prefers-reduced-motion: reduce)');
   const mqCoarse=window.matchMedia('(pointer: coarse)');
   function refreshA11y(){
@@ -1061,13 +1063,69 @@ footer{
 
   const reducedMotion=mqReduce.matches;
 
-  const nextInput=document.getElementById('formsubmit-next');
-  if(nextInput&&window.location.protocol!=='file:'){
-    try{
-      const u=new URL(window.location.href);
-      u.hash='#den-den';
-      nextInput.value=u.toString();
-    }catch(e){}
+  /* CONTACT FORM — Web3Forms or mailto fallback */
+  const contactForm=document.getElementById('portfolio-contact-form');
+  const formStatus=document.getElementById('contact-form-status');
+  if(contactForm){
+    contactForm.addEventListener('submit',async function(ev){
+      ev.preventDefault();
+      const nameEl=document.getElementById('contact-name');
+      const emailEl=document.getElementById('contact-email');
+      const msgEl=document.getElementById('contact-msg');
+      const btn=document.getElementById('contact-submit-btn');
+      if(!nameEl||!emailEl||!msgEl||!btn)return;
+      if(contactForm.querySelector('input[name="botcheck"]')?.value)return;
+      const name=nameEl.value.trim();
+      const email=emailEl.value.trim();
+      const message=msgEl.value.trim();
+      const goMailto=()=>{
+        const sub=encodeURIComponent('Portfolio — Grand Line DevOps (from '+name+')');
+        const bod=encodeURIComponent('Reply to: '+email+'\n\n'+message);
+        window.location.href='mailto:dmanirk07@gmail.com?subject='+sub+'&body='+bod;
+      };
+      if(!WEB3FORMS_ACCESS_KEY){
+        goMailto();
+        if(formStatus){
+          formStatus.textContent='Opening your email app. Send the message there — or paste a Web3Forms key in index.html for one-click send.';
+          formStatus.style.color='var(--gold2)';
+        }
+        return;
+      }
+      btn.disabled=true;
+      if(formStatus){formStatus.textContent='Sending…';formStatus.style.color='var(--muted)';}
+      try{
+        const res=await fetch('https://api.web3forms.com/submit',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Accept':'application/json'},
+          body:JSON.stringify({
+            access_key:WEB3FORMS_ACCESS_KEY,
+            subject:'Portfolio — Grand Line DevOps',
+            from_name:name,
+            name:name,
+            email:email,
+            message:message,
+            replyto:email,
+          }),
+        });
+        const data=await res.json();
+        if(data.success){
+          contactForm.reset();
+          if(formStatus){
+            formStatus.textContent='Message sent. Check dmanirk07@gmail.com (inbox & spam).';
+            formStatus.style.color='var(--gold2)';
+          }
+        }else{
+          throw new Error(data.message||'Send failed');
+        }
+      }catch(err){
+        goMailto();
+        if(formStatus){
+          formStatus.textContent='Could not send via Web3Forms. Opening your email app instead.';
+          formStatus.style.color='var(--gold2)';
+        }
+      }
+      btn.disabled=false;
+    });
   }
 
   /* MOBILE NAV */
