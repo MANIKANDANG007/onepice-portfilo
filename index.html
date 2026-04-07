@@ -78,6 +78,13 @@ html.site-reduce-motion .cursor-dot,
 html.site-reduce-motion #stars-canvas,
 html.site-reduce-motion #ocean-canvas,
 html.site-reduce-motion .ship-float{display:none!important;}
+html.site-reduce-motion .hero-portrait,
+html.site-reduce-motion .wanted-poster-frame,
+html.site-reduce-motion .jolly-roger.reveal.visible,
+html.site-reduce-motion .skull-sep,
+html.site-reduce-motion .footer-daily,
+html.site-reduce-motion .footer-daily-tag,
+html.site-reduce-motion .footer-daily-quote{animation:none!important;}
 
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto;}
@@ -196,6 +203,11 @@ nav.nav-open .nav-toggle-bar:nth-child(3){transform:translateY(-7px) rotate(-45d
   width:100%;
   background:linear-gradient(135deg,rgba(10,14,26,0.9),rgba(6,10,18,0.95));
   box-shadow:0 0 60px rgba(212,160,23,0.15),inset 0 0 40px rgba(0,0,0,0.5);
+  animation:posterFrameGlow 6s ease-in-out infinite;
+}
+@keyframes posterFrameGlow{
+  0%,100%{box-shadow:0 0 60px rgba(212,160,23,0.15),inset 0 0 40px rgba(0,0,0,0.5);border-color:var(--gold);}
+  50%{box-shadow:0 0 85px rgba(245,200,66,0.2),0 0 28px rgba(212,160,23,0.12),inset 0 0 40px rgba(0,0,0,0.5);border-color:var(--gold2);}
 }
 .poster-corner{position:absolute;width:24px;height:24px;border-color:var(--gold2);border-style:solid;}
 .poster-corner.tl{top:-2px;left:-2px;border-width:4px 0 0 4px;}
@@ -276,6 +288,11 @@ nav.nav-open .nav-toggle-bar:nth-child(3){transform:translateY(-7px) rotate(-45d
   display:block;width:min(200px,48vw);height:min(200px,48vw);margin:0 auto;object-fit:cover;
   border:3px solid var(--gold);border-radius:50%;
   box-shadow:0 0 30px rgba(212,160,23,0.25),inset 0 0 24px rgba(0,0,0,0.35);
+  animation:heroPortraitFloat 5.5s ease-in-out infinite;
+}
+@keyframes heroPortraitFloat{
+  0%,100%{transform:translateY(0);box-shadow:0 0 30px rgba(212,160,23,0.25),inset 0 0 24px rgba(0,0,0,0.35);}
+  50%{transform:translateY(-8px);box-shadow:0 12px 42px rgba(212,160,23,0.38),inset 0 0 28px rgba(0,0,0,0.4);}
 }
 .hero-portrait-fallback{
   display:none;width:min(200px,48vw);height:min(200px,48vw);margin:0 auto;align-items:center;justify-content:center;
@@ -304,7 +321,12 @@ nav.nav-open .nav-toggle-bar:nth-child(3){transform:translateY(-7px) rotate(-45d
 /* SECTION COMMON */
 section{padding:6rem 3rem;position:relative;z-index:1;}
 .section-header{text-align:center;margin-bottom:4rem;}
-.jolly-roger{font-size:2rem;margin-bottom:0.5rem;}
+.jolly-roger{font-size:2rem;margin-bottom:0.5rem;display:inline-block;}
+.jolly-roger.reveal.visible{animation:jollyBob 3.5s ease-in-out infinite;}
+@keyframes jollyBob{
+  0%,100%{transform:translateY(0) rotate(0deg);}
+  50%{transform:translateY(-4px) rotate(4deg);}
+}
 .section-tag{font-family:var(--serif);font-size:11px;letter-spacing:0.4em;color:var(--gold);margin-bottom:0.5rem;display:block;}
 .section-title{font-family:var(--display);font-size:clamp(2rem,4vw,3.5rem);color:var(--gold2);text-shadow:0 0 30px rgba(245,200,66,0.2);}
 .section-rule{display:flex;align-items:center;gap:1rem;justify-content:center;margin-top:1rem;}
@@ -543,7 +565,11 @@ section{padding:6rem 3rem;position:relative;z-index:1;}
 .d1{transition-delay:0.1s;}.d2{transition-delay:0.2s;}.d3{transition-delay:0.3s;}.d4{transition-delay:0.4s;}.d5{transition-delay:0.5s;}.d6{transition-delay:0.6s;}
 
 /* SKULL SEPARATOR */
-.skull-sep{text-align:center;padding:2rem 0;font-family:var(--display);font-size:1.5rem;color:rgba(212,160,23,0.3);letter-spacing:1rem;position:relative;z-index:1;}
+.skull-sep{text-align:center;padding:2rem 0;font-family:var(--display);font-size:1.5rem;color:rgba(212,160,23,0.3);letter-spacing:1rem;position:relative;z-index:1;animation:skullSepGlow 4s ease-in-out infinite;}
+@keyframes skullSepGlow{
+  0%,100%{color:rgba(212,160,23,0.28);letter-spacing:1rem;}
+  50%{color:rgba(245,200,66,0.45);letter-spacing:1.15rem;}
+}
 
 /* FOOTER */
 footer{
@@ -557,12 +583,31 @@ footer{
   text-align:center;max-width:720px;margin:0 auto;padding:1.25rem 1rem;
   border:1px solid rgba(212,160,23,0.22);
   background:linear-gradient(145deg,rgba(10,14,26,0.75),rgba(6,10,18,0.9));
+  animation:footerLogbookEnter 0.9s ease 0.35s both,footerLogbookBorder 5s ease-in-out 1.2s infinite;
+}
+@keyframes footerLogbookEnter{
+  from{opacity:0;transform:translateY(18px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes footerLogbookBorder{
+  0%,100%{border-color:rgba(212,160,23,0.22);box-shadow:0 0 0 0 rgba(212,160,23,0);}
+  50%{border-color:rgba(245,200,66,0.4);box-shadow:0 0 24px rgba(212,160,23,0.08);}
 }
 .footer-daily-tag{
   display:block;font-family:var(--serif);font-size:9px;letter-spacing:0.35em;color:var(--gold);margin-bottom:0.6rem;
+  animation:footerTagPulse 3s ease-in-out infinite;
+}
+@keyframes footerTagPulse{
+  0%,100%{opacity:0.85;letter-spacing:0.35em;}
+  50%{opacity:1;letter-spacing:0.4em;}
 }
 .footer-daily-quote{
   font-family:var(--body);font-size:clamp(15px,2vw,17px);font-style:italic;color:var(--parchment);line-height:1.75;margin:0;
+  animation:quoteLineShimmer 7s ease-in-out infinite;
+}
+@keyframes quoteLineShimmer{
+  0%,100%{opacity:0.92;text-shadow:0 0 0 transparent;}
+  50%{opacity:1;text-shadow:0 0 20px rgba(245,200,66,0.15);}
 }
 .footer-row{
   display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
@@ -1307,7 +1352,7 @@ footer{
     co.observe(el);
   });
 
-  /* CAPTAIN'S LOGBOOK — exactly 500 unique combos (20×25); random on each refresh */
+  /* CAPTAIN'S LOGBOOK — 32×42 = 1,344 unique pairings; random two halves each refresh */
   const LOGBOOK_LEFT=[
     'Chart the voyage the way Nami would',
     'Straw Hat courage belongs in',
@@ -1328,7 +1373,19 @@ footer{
     'Escaping Impel Down needs',
     'Skypiea said the cloud is really',
     'A Log Pose jitters — steady the ship with',
-    'Observation Haki reads intent — AIOps reads'
+    'Observation Haki reads intent — AIOps reads',
+    'Roger laughed starting an era — you begin with',
+    'Ohara\'s flame couldn\'t erase truth — neither can missing',
+    'Reverse Mountain slams currents — merge yours with',
+    'Baratie line chefs under cannon fire — mirror that in',
+    'CP9\'s Tekkai breaks against good',
+    'Garp\'s knuckle parenting hits like',
+    'Bellamy mocked dreams until',
+    'Cricket climbed toward a lie — engineer toward',
+    'Kuro\'s speed means nothing without',
+    'Alabasta drought ends when rulers invest in',
+    'Jaya\'s knock-up stream hides',
+    'Long Ring Long Land tests endurance — production needs'
   ];
   const LOGBOOK_RIGHT=[
     'CI/CD that refuses cowardly Friday deploys',
@@ -1355,18 +1412,30 @@ footer{
     'Kafka currents charted sober through the Calm Belt',
     'SLOs posted like bounties everyone respects',
     'canary scouts landing beaches before the full fleet',
-    'OIDC and OAuth flows tighter than Impel Down shackles'
+    'OIDC and OAuth flows tighter than Impel Down shackles',
+    'SAST, DAST, and SBOM gates in every harbor',
+    'signed artifacts and provenance logs worth a Marine tribunal',
+    'eBPF and kernel traces sharper than Rayleigh\'s lesson',
+    'serverless concurrency warmed before the rush hits',
+    'columnar OLAP answering questions Ohara would forgive',
+    'Lakehouse ACID braver than crossing the Red Line',
+    'stream processors joining fleets like Whitebeard allies',
+    'embeddings indexed cleaner than Ohara\'s basement',
+    'RLHF and human-review loops before models go Yonko',
+    'inference autoscaling pulsing like Gear Second stamina',
+    'data contracts stricter than Cipher Pol interrogations',
+    'chaos days rehearsed like Marineford war games',
+    'backup restore drills faster than Bon\'s escape hops',
+    'API rate limits calmer than Garp after lunch',
+    'GPU quotas shared fairer than Baratie portions',
+    'prompt/version registries vaulting every generation',
+    'shadow traffic comparing admirals without alerting the world'
   ];
-  const LOGBOOK_QUOTES=[];
-  for(let i=0;i<LOGBOOK_LEFT.length;i++){
-    for(let j=0;j<LOGBOOK_RIGHT.length;j++){
-      LOGBOOK_QUOTES.push(LOGBOOK_LEFT[i]+' — '+LOGBOOK_RIGHT[j]);
-    }
-  }
   const dqEl=document.getElementById('daily-quote');
-  if(dqEl&&LOGBOOK_QUOTES.length){
-    const pick=LOGBOOK_QUOTES[Math.floor(Math.random()*LOGBOOK_QUOTES.length)];
-    dqEl.textContent='"'+pick+'"';
+  if(dqEl&&LOGBOOK_LEFT.length&&LOGBOOK_RIGHT.length){
+    const li=Math.floor(Math.random()*LOGBOOK_LEFT.length);
+    const ri=Math.floor(Math.random()*LOGBOOK_RIGHT.length);
+    dqEl.textContent='"'+LOGBOOK_LEFT[li]+' — '+LOGBOOK_RIGHT[ri]+'"';
   }
 })();
 </script>
